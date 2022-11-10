@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=swordhealth-test
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql:/var/lib/mysql
+
+  nest-api:
+    image: node:16
+    working_dir: /app
+    container_name: nest-api
+    restart: unless-stopped
+    command: npm run start:debug
+    volumes:
+      - .:/app
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mysql
+
+volumes:
+  mysql:
