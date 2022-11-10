@@ -11,7 +11,18 @@ export class UserRepository implements IUserRepository {
   }
 
   async insert(params: WithoutTimestampsAndId<IUser>): Promise<IUser> {
-    const [user] = await this.table().insert(params, '*');
+    const result = await this.table().insert(params);
+    const createdId = result[0] as number;
+    return { id: createdId, ...params, createdAt: new Date() };
+  }
+
+  async findByEmail(
+    email: string,
+    returnWithPassword?: boolean,
+  ): Promise<IUser | null> {
+    const user = await this.table().where('email', email).first();
+    if (!user) return null;
+    if (returnWithPassword) return user;
     delete user.password;
     return user;
   }

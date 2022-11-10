@@ -12,18 +12,5 @@ services:
     volumes:
       - mysql:/var/lib/mysql
 
-  nest-api:
-    image: node:16
-    working_dir: /app
-    container_name: nest-api
-    restart: unless-stopped
-    command: npm run start:debug
-    volumes:
-      - .:/app
-    ports:
-      - '3000:3000'
-    depends_on:
-      - mysql
-
 volumes:
   mysql:
