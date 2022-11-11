@@ -1,36 +1,32 @@
-import { WithoutTimestampsAndId } from '@/shared/helpers/types.helper';
-import { databaseHelper } from '@/shared/helpers/database.helper';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { databaseHelper } from '@/shared/helpers/database.helper';
 import { IUserRepository } from './dto/user-repository.dto';
 import { IUser } from './dto/user.dto';
 
-@Injectable()
-export class UserRepository implements IUserRepository {
-  private table() {
-    return databaseHelper.getTable<IUser>('users');
-  }
+function table() {
+  return databaseHelper.getTable<IUser>('users');
+}
 
-  async insert(params: WithoutTimestampsAndId<IUser>): Promise<IUser> {
-    const result = await this.table().insert(params);
+@Injectable()
+export class UserRepository {
+  insert: IUserRepository.Insert = async (params) => {
+    const result = await table().insert(params);
     const createdId = result[0] as number;
     return { id: createdId, ...params, createdAt: new Date() };
-  }
+  };
 
-  async findById(id: number): Promise<IUser | null> {
-    const user = await this.table()
-      .where('id', id)
-      .whereNull('deletedAt')
-      .first();
+  findById: IUserRepository.FindById = async (id) => {
+    const user = await table().where('id', id).whereNull('deletedAt').first();
     if (!user) return null;
     delete user.password;
     return user;
-  }
+  };
 
-  async findByEmail(
+  findByEmail: IUserRepository.FindByEmail = async (
     email: string,
     returnWithPassword?: boolean,
-  ): Promise<IUser | null> {
-    const user = await this.table()
+  ) => {
+    const user = await table()
       .where('email', email)
       .whereNull('deletedAt')
       .first();
@@ -38,14 +34,14 @@ export class UserRepository implements IUserRepository {
     if (returnWithPassword) return user;
     delete user.password;
     return user;
-  }
+  };
 
-  async findAll(): Promise<IUser[]> {
-    return await this.table().whereNull('deletedAt');
-  }
+  findAll: IUserRepository.FindAll = async () => {
+    return await table().whereNull('deletedAt');
+  };
 
-  async update(id: number, params: Partial<IUser>): Promise<boolean> {
-    const result = await this.table()
+  update: IUserRepository.Update = async (id, params) => {
+    const result = await table()
       .where('id', id)
       .whereNull('deletedAt')
       .update({
@@ -56,15 +52,15 @@ export class UserRepository implements IUserRepository {
       return true;
     }
     throw new NotFoundException('user not found');
-  }
+  };
 
-  async softDelete(id: number): Promise<boolean> {
-    const result = await this.table()
+  softDelete: IUserRepository.SoftDelete = async (id) => {
+    const result = await table()
       .where('id', id)
       .update({ deletedAt: databaseHelper.knex.fn.now() });
     if (Boolean(result)) {
       return true;
     }
     throw new NotFoundException('user not found');
-  }
+  };
 }
