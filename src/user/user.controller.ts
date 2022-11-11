@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { OnlyManagerGuard } from '@/shared/guards/manager.guard';
+import { SwaggerDocs } from '@/shared/decorators/swagger.decorator';
 import { IUserController } from './dto/user-controller.dto';
 import { UserService } from './user.service';
 
@@ -18,12 +19,20 @@ export class UserController {
 
   @Get()
   @UseGuards(OnlyManagerGuard)
+  @SwaggerDocs({
+    response: IUserController.GetAllResponse,
+    hasBearerToken: true,
+  })
   async getAll(): Promise<IUserController.GetAllResponse> {
     return await this.userService.getAllUsers();
   }
 
   @Post()
   @UseGuards(OnlyManagerGuard)
+  @SwaggerDocs({
+    response: IUserController.CreateResponse,
+    hasBearerToken: true,
+  })
   async createUser(
     @Body() body: IUserController.CreateDTO,
   ): Promise<IUserController.CreateResponse> {
@@ -32,6 +41,10 @@ export class UserController {
 
   @Put(':userId')
   @UseGuards(OnlyManagerGuard)
+  @SwaggerDocs({
+    response: IUserController.UpdateResponse,
+    hasBearerToken: true,
+  })
   async updateUser(
     @Param('userId') userId: string,
     @Body() body: IUserController.UpdateDTO,
@@ -41,6 +54,10 @@ export class UserController {
 
   @Delete(':userId')
   @UseGuards(OnlyManagerGuard)
+  @SwaggerDocs({
+    response: IUserController.DeleteResponse,
+    hasBearerToken: true,
+  })
   async deleteUser(
     @Param('userId') userId: string,
   ): Promise<IUserController.DeleteResponse> {
@@ -48,6 +65,7 @@ export class UserController {
   }
 
   @Post('getToken')
+  @SwaggerDocs({ response: IUserController.GetTokenResponse })
   async getToken(
     @Body() body: IUserController.GetTokenDTO,
   ): Promise<IUserController.GetTokenResponse> {

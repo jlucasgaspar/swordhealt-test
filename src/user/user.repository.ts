@@ -1,8 +1,6 @@
-import { databaseHelper } from '@/shared/helpers/database.helper';
 import { WithoutTimestampsAndId } from '@/shared/helpers/types.helper';
+import { databaseHelper } from '@/shared/helpers/database.helper';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import knex from 'knex';
-import knexConfig from 'knexfile';
 import { IUserRepository } from './dto/user-repository.dto';
 import { IUser } from './dto/user.dto';
 

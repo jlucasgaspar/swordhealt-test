@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { JoiSchema, JoiSchemaOptions } from 'nestjs-joi';
 import { IUser, IUserRole } from '@/user/dto/user.dto';
 import * as Joi from 'joi';
@@ -7,6 +8,7 @@ import * as Joi from 'joi';
  */
 class IGetAllDTO {}
 class IGetAllResponse {
+  @ApiProperty({ type: IUser, isArray: true })
   users: IUser[];
 }
 
@@ -15,20 +17,26 @@ class IGetAllResponse {
  */
 @JoiSchemaOptions({ allowUnknown: false, abortEarly: false })
 class ICreateDTO {
+  @ApiProperty({ type: String })
   @JoiSchema(Joi.string().email().required())
   email: string;
 
+  @ApiProperty({ type: String })
   @JoiSchema(Joi.string().required())
   name: string;
 
+  @ApiProperty({ type: String })
   @JoiSchema(Joi.string().required())
   password: string;
 
+  @ApiProperty({ enum: ['manager', 'technician'] })
   @JoiSchema(Joi.string().required().valid('manager', 'technician'))
   role: IUserRole;
 }
 class ICreateResponse {
+  @ApiProperty({ type: IUser })
   user: IUser;
+  @ApiProperty({ type: String })
   token: string;
 }
 
@@ -37,19 +45,24 @@ class ICreateResponse {
  */
 @JoiSchemaOptions({ allowUnknown: false, abortEarly: false })
 class IUpdateDTO {
+  @ApiPropertyOptional({ type: String })
   @JoiSchema(Joi.string().email().optional())
   email: string;
 
+  @ApiPropertyOptional({ type: String })
   @JoiSchema(Joi.string().optional())
   name: string;
 
+  @ApiPropertyOptional({ type: String })
   @JoiSchema(Joi.string().optional())
   password: string;
 
+  @ApiPropertyOptional({ enum: ['manager', 'technician'] })
   @JoiSchema(Joi.string().optional().valid('manager', 'technician'))
   role: IUserRole;
 }
 class IUpdateResponse {
+  @ApiProperty({ type: Boolean })
   updated: boolean;
 }
 
@@ -58,6 +71,7 @@ class IUpdateResponse {
  */
 class IDeleteDTO {}
 class IDeleteResponse {
+  @ApiProperty({ type: Boolean })
   deleted: boolean;
 }
 
@@ -66,13 +80,16 @@ class IDeleteResponse {
  */
 @JoiSchemaOptions({ allowUnknown: false, abortEarly: false })
 class IGetTokenDTO {
+  @ApiProperty({ type: String })
   @JoiSchema(Joi.string().email().required())
   email: string;
 
+  @ApiProperty({ type: String })
   @JoiSchema(Joi.string().required())
   password: string;
 }
 class IGetTokenResponse {
+  @ApiProperty({ type: String })
   token: string;
 }
 
