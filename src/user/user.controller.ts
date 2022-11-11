@@ -46,7 +46,7 @@ export class UserController {
     hasBearerToken: true,
   })
   async updateUser(
-    @Param('userId') userId: string,
+    @Param('userId') userId: number,
     @Body() body: IUserController.UpdateDTO,
   ): Promise<IUserController.UpdateResponse> {
     return this.userService.updateUser(Number(userId), body);

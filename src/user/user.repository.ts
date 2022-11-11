@@ -43,7 +43,6 @@ export class UserRepository {
   update: IUserRepository.Update = async (id, params) => {
     const result = await table()
       .where('id', id)
-      .whereNull('deletedAt')
       .update({
         ...params,
         updatedAt: databaseHelper.knex.fn.now(),

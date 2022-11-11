@@ -1,20 +1,17 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class IUser {
+export class ITask {
   @ApiProperty({ type: Number })
   id: number;
 
-  @ApiProperty({ type: String })
-  name: string;
-
-  @ApiProperty({ enum: ['manager', 'technician'] })
-  role: IUserRole;
+  @ApiProperty({ type: Number })
+  userId: number;
 
   @ApiProperty({ type: String })
-  email: string;
+  summary: string;
 
-  @ApiProperty({ type: String })
-  password: string;
+  @ApiPropertyOptional({ type: Date })
+  finishedAt?: Date | null;
 
   @ApiProperty({ type: Date })
   createdAt: Date;
@@ -25,5 +22,3 @@ export class IUser {
   @ApiPropertyOptional({ type: Date })
   deletedAt?: Date | null;
 }
-
-export type IUserRole = 'manager' | 'technician';
