@@ -2,13 +2,11 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { EncryptProvider } from '@/shared/providers/encrypt.provider';
 import { IUserService } from './dto/user-service.dto';
 import { UserRepository } from './user.repository';
-import { IUserRole } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -18,11 +16,7 @@ export class UserService {
     private readonly encrypterProvider: EncryptProvider,
   ) {}
 
-  async createUser(params: IUserService.CreateDTO, requestUserRole: IUserRole) {
-    if (requestUserRole !== 'manager') {
-      throw new UnauthorizedException('Only a manager can create an user');
-    }
-
+  async createUser(params: IUserService.CreateDTO) {
     const emailExists = await this.userRepository.findByEmail(params.email);
     if (emailExists) {
       throw new BadRequestException('e-mail already exists');
@@ -32,7 +26,9 @@ export class UserService {
 
     const user = await this.userRepository.insert(params);
 
-    return { user };
+    const token = this.jwtService.sign({ sub: user.id });
+
+    return { user, token };
   }
 
   async getToken(params: IUserService.GetTokenDTO) {
@@ -54,5 +50,20 @@ export class UserService {
     const token = this.jwtService.sign({ sub: user.id });
 
     return { token };
+  }
+
+  async getAllUsers() {
+    const users = await this.userRepository.findAll();
+    return { users };
+  }
+
+  async updateUser(userId: number, params: IUserService.UpdateDTO) {
+    const updated = await this.userRepository.update(userId, params);
+    return { updated };
+  }
+
+  async softDeleteUser(userId: number) {
+    const deleted = await this.userRepository.softDelete(userId);
+    return { deleted };
   }
 }
