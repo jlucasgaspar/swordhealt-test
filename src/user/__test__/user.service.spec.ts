@@ -14,12 +14,6 @@ describe(UserService.name, () => {
     jest.spyOn(jwtService, 'sign').mockImplementation(() => {
       return 'jwt_token';
     });
-    // jest.spyOn(encrypterProvider, 'compare').mockImplementation(async () => {
-    //   return true;
-    // });
-    // jest.spyOn(encrypterProvider, 'hash').mockImplementation(async () => {
-    //   return 'hashed_password';
-    // });
   });
 
   beforeEach(() => {
