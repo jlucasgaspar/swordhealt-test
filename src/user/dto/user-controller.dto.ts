@@ -47,19 +47,19 @@ class ICreateResponse {
 class IUpdateDTO {
   @ApiPropertyOptional({ type: String })
   @JoiSchema(Joi.string().email().optional())
-  email: string;
+  email?: string;
 
   @ApiPropertyOptional({ type: String })
   @JoiSchema(Joi.string().optional())
-  name: string;
+  name?: string;
 
   @ApiPropertyOptional({ type: String })
   @JoiSchema(Joi.string().optional())
-  password: string;
+  password?: string;
 
   @ApiPropertyOptional({ enum: ['manager', 'technician'] })
   @JoiSchema(Joi.string().optional().valid('manager', 'technician'))
-  role: IUserRole;
+  role?: IUserRole;
 }
 class IUpdateResponse {
   @ApiProperty({ type: Boolean })
