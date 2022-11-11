@@ -8,5 +8,7 @@ export namespace ITaskRepository {
 
   export type Update = (id: number, params: Partial<ITask>) => Promise<boolean>;
 
+  export type FindByUserId = (userId: number) => Promise<ITask[]>;
+
   export type SoftDelete = (id: number) => Promise<boolean>;
 }

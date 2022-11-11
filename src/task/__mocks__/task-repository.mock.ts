@@ -44,6 +44,10 @@ export class TaskRepositoryMock implements TaskRepository {
     throw new NotFoundException('task not found');
   };
 
+  findByUserId: ITaskRepository.FindByUserId = async (userId) => {
+    return this.db.filter((task) => task.userId === userId);
+  };
+
   softDelete: ITaskRepository.SoftDelete = async (id) => {
     let isOk = false;
 

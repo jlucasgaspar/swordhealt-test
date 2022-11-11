@@ -54,4 +54,27 @@ describe('updateTask', () => {
     const result = sut.updateTask(1, taskDto, requestUser);
     expect(result).rejects.toThrow(BadRequestException);
   });
+
+  it('should throw if userId is provided but this userId does not exists', async () => {
+    const requestUser = { role: 'manager' } as IUser;
+    const result = sut.updateTask(1, { userId: 99999 }, requestUser);
+    expect(result).rejects.toThrow(NotFoundException);
+  });
+
+  it('should return a task if everything is ok', async () => {
+    const createdUser = await userRepositoryMock.insert({
+      email: 'mail@mail.com',
+      password: '123456',
+      name: 'name',
+      role: 'manager',
+    });
+    const taskDto = { summary: 'summary', userId: createdUser.id };
+    const createdTask = await sut.createTask(taskDto, createdUser);
+    const result = await sut.updateTask(
+      createdTask.task.id,
+      { summary: 'new summary' },
+      createdUser,
+    );
+    expect(result.updated).toBeTruthy();
+  });
 });

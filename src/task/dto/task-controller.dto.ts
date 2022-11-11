@@ -22,7 +22,7 @@ class ICreateResponse {
 }
 
 /*
- * PUT /task/:id
+ * PUT /task/:taskId
  */
 @JoiSchemaOptions({ allowUnknown: false, abortEarly: false })
 class IUpdateDTO {
