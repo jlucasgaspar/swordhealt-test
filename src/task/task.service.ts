@@ -48,4 +48,9 @@ export class TaskService {
     const updated = await this.taskRepository.update(taskId, params);
     return { updated };
   }
+
+  async findAllWithFilter(filterParams?: ITaskService.GetAllDTO) {
+    const tasks = await this.taskRepository.findAll(filterParams);
+    return { tasks };
+  }
 }

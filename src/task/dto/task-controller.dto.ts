@@ -4,6 +4,15 @@ import { ITask } from '@/task/dto/task.dto';
 import * as Joi from 'joi';
 
 /*
+ * GET /task?userId=''
+ */
+@JoiSchemaOptions({ allowUnknown: false, abortEarly: false })
+class IGetAllDTO {}
+class IGetAllResponse {
+  tasks: ITask[];
+}
+
+/*
  * POST /task
  */
 @JoiSchemaOptions({ allowUnknown: false, abortEarly: false })
@@ -40,6 +49,9 @@ class IUpdateResponse {
 }
 
 export namespace ITaskController {
+  export class GetAllDTO extends IGetAllDTO {}
+  export class GetAllResponse extends IGetAllResponse {}
+
   export class CreateDTO extends ICreateDTO {}
   export class CreateResponse extends ICreateResponse {}
 

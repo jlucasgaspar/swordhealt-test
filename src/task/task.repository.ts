@@ -37,8 +37,16 @@ export class TaskRepository {
     throw new NotFoundException('task not found');
   };
 
-  findByUserId: ITaskRepository.FindByUserId = async (userId) => {
-    return await table().where('userId', userId).whereNull('deletedAt');
+  findAll: ITaskRepository.FindAll = async (filterParams) => {
+    const query = table();
+
+    if (filterParams) {
+      for (const [key, value] of Object.entries(filterParams)) {
+        query.where(key, value);
+      }
+    }
+
+    return await query.whereNull('deletedAt');
   };
 
   softDelete: ITaskRepository.SoftDelete = async (id) => {

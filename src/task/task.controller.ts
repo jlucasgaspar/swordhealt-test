@@ -1,4 +1,13 @@
-import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { SwaggerDocs } from '@/shared/decorators/swagger.decorator';
 import { AuthGuard } from '@/shared/guards/auth.guard';
 import { User } from '@/shared/decorators/user.decorator';
@@ -21,6 +30,18 @@ export class TaskController {
     @User() requestUser: IUser,
   ): Promise<ITaskController.CreateResponse> {
     return await this.taskService.createTask(body, requestUser);
+  }
+
+  @Get()
+  @SwaggerDocs({
+    response: ITaskController.GetAllResponse,
+    hasBearerToken: true,
+  })
+  async getAll(
+    @Query('userId') userId: number,
+    // @User() requestUser: IUser,
+  ): Promise<ITaskController.GetAllResponse> {
+    return await this.taskService.findAllWithFilter({ userId });
   }
 
   @Put(':taskId')
