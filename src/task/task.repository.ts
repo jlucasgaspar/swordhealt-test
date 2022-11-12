@@ -40,10 +40,10 @@ export class TaskRepository {
   findAll: ITaskRepository.FindAll = async (filterParams) => {
     const query = table();
 
-    if (filterParams) {
-      for (const [key, value] of Object.entries(filterParams)) {
-        query.where(key, value);
-      }
+    const filterParamsObject = filterParams || {};
+
+    for (const [key, value] of Object.entries(filterParamsObject)) {
+      query.where(key, value);
     }
 
     return await query.whereNull('deletedAt');

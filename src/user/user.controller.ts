@@ -8,17 +8,23 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { OnlyManagerGuard } from '@/shared/guards/manager.guard';
+import { JWTAuthControllerGuard } from '@/shared/guards/jwt-auth-controller.guard';
 import { SwaggerDocs } from '@/shared/decorators/swagger.decorator';
+import { RoleACLGuard } from '@/shared/guards/role-acl.guard';
 import { IUserController } from './dto/user-controller.dto';
 import { UserService } from './user.service';
 
+const AuthGuard = JWTAuthControllerGuard({
+  publicRoutes: ['getToken'],
+});
+
 @Controller('user')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @UseGuards(OnlyManagerGuard)
+  @UseGuards(RoleACLGuard('manager:true', 'technician:false'))
   @SwaggerDocs({
     response: IUserController.GetAllResponse,
     hasBearerToken: true,
@@ -28,7 +34,7 @@ export class UserController {
   }
 
   @Post()
-  @UseGuards(OnlyManagerGuard)
+  @UseGuards(RoleACLGuard('manager:true', 'technician:false'))
   @SwaggerDocs({
     response: IUserController.CreateResponse,
     hasBearerToken: true,
@@ -40,7 +46,7 @@ export class UserController {
   }
 
   @Put(':userId')
-  @UseGuards(OnlyManagerGuard)
+  @UseGuards(RoleACLGuard('manager:true', 'technician:id:param'))
   @SwaggerDocs({
     response: IUserController.UpdateResponse,
     hasBearerToken: true,
@@ -53,7 +59,7 @@ export class UserController {
   }
 
   @Delete(':userId')
-  @UseGuards(OnlyManagerGuard)
+  @UseGuards(RoleACLGuard('manager:true', 'technician:id:param'))
   @SwaggerDocs({
     response: IUserController.DeleteResponse,
     hasBearerToken: true,

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserRepository } from '@/user/user.repository';
-import { IUser } from '@/user/dto/user.dto';
+import { IUserRole } from '@/user/dto/user.dto';
 import { ITaskService } from './dto/task-service.dto';
 import { TaskRepository } from './task.repository';
 
@@ -15,12 +15,7 @@ export class TaskService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async createTask(params: ITaskService.CreateDTO, requestUser: IUser) {
-    if (requestUser.role === 'technician' && requestUser.id !== params.userId) {
-      throw new BadRequestException(
-        'you can not make request for a different technician',
-      );
-    }
+  async createTask(params: ITaskService.CreateDTO) {
     const userExists = await this.userRepository.findById(params.userId);
     if (!userExists) {
       throw new NotFoundException('userId provided not exists');
@@ -32,18 +27,10 @@ export class TaskService {
   async updateTask(
     taskId: number,
     params: ITaskService.UpdateDTO,
-    requestUser: IUser,
+    requestUserRole: IUserRole,
   ) {
-    if (params.userId) {
-      if (requestUser.role === 'technician') {
-        throw new BadRequestException(
-          'Only manager can change userId of a task',
-        );
-      }
-      const userExists = await this.userRepository.findById(params.userId);
-      if (!userExists) {
-        throw new NotFoundException('userId provided not exists');
-      }
+    if (params.userId && requestUserRole === 'technician') {
+      throw new BadRequestException('Only manager can change userId of a task');
     }
     const updated = await this.taskRepository.update(taskId, params);
     return { updated };

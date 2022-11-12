@@ -4,4 +4,4 @@ function getUser(_: unknown, ctx: ExecutionContext) {
   return ctx.switchToHttp().getRequest().user;
 }
 
-export const User = createParamDecorator(getUser);
+export const GetRequestUser = createParamDecorator(getUser);

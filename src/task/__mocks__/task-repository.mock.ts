@@ -50,7 +50,9 @@ export class TaskRepositoryMock implements TaskRepository {
         return false;
       }
 
-      for (const [key, value] of Object.entries(filterParams)) {
+      const filterParamsObject = filterParams || {};
+
+      for (const [key, value] of Object.entries(filterParamsObject)) {
         if (task[key] !== value) {
           return false;
         }
