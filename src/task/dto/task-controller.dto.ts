@@ -48,6 +48,24 @@ class IUpdateResponse {
   updated: boolean;
 }
 
+/*
+ * POST /task/finish
+ */
+@JoiSchemaOptions({ allowUnknown: false, abortEarly: false })
+class IFinishTaskDTO {
+  @ApiPropertyOptional({ type: Number })
+  @JoiSchema(Joi.number().required())
+  userId: number;
+
+  @ApiPropertyOptional({ type: Number })
+  @JoiSchema(Joi.number().required())
+  taskId: number;
+}
+class IFinishTaskResponse {
+  @ApiProperty({ type: Boolean })
+  finished: boolean;
+}
+
 export namespace ITaskController {
   export class GetAllDTO extends IGetAllDTO {}
   export class GetAllResponse extends IGetAllResponse {}
@@ -57,4 +75,7 @@ export namespace ITaskController {
 
   export class UpdateDTO extends IUpdateDTO {}
   export class UpdateResponse extends IUpdateResponse {}
+
+  export class FinishTaskDTO extends IFinishTaskDTO {}
+  export class FinishTaskResponse extends IFinishTaskResponse {}
 }

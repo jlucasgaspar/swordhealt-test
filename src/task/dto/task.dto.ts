@@ -22,3 +22,9 @@ export class ITask {
   @ApiPropertyOptional({ type: Date })
   deletedAt?: Date | null;
 }
+
+export class FinishTaskDTO {
+  userId: number;
+  taskId: number;
+  finishedAt: Date;
+}

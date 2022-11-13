@@ -7,6 +7,7 @@ import { UserRepository } from '@/user/user.repository';
 import { IUserRole } from '@/user/dto/user.dto';
 import { ITaskService } from './dto/task-service.dto';
 import { TaskRepository } from './task.repository';
+import { FinishTaskDTO } from './dto/task.dto';
 
 @Injectable()
 export class TaskService {
@@ -39,5 +40,22 @@ export class TaskService {
   async findAllWithFilter(filterParams?: ITaskService.GetAllDTO) {
     const tasks = await this.taskRepository.findAll(filterParams);
     return { tasks };
+  }
+
+  async finishTask({ finishedAt, taskId, userId }: FinishTaskDTO) {
+    const [user, isUpdated] = await Promise.all([
+      this.userRepository.findById(userId),
+      this.taskRepository.update(taskId, { finishedAt }),
+    ]);
+
+    if (!user) {
+      const errorMessage = `Task ID ${taskId} finished: ${isUpdated}. User ID ${userId} not found.`;
+      console.error(errorMessage);
+      throw new NotFoundException(errorMessage);
+    }
+
+    console.log(
+      `User ${user.name} finished task ${taskId} at time ${finishedAt}`,
+    );
   }
 }

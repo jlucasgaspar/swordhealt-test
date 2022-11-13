@@ -5,7 +5,7 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { swaggerHelper } from './shared/helpers/swagger.helper';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   swaggerHelper.setupSwaggerDocs(app);
   app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(3000);

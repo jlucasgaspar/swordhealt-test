@@ -15,13 +15,17 @@ import { RoleACLGuard } from '@/shared/guards/role-acl.guard';
 import { IUser } from '@/user/dto/user.dto';
 import { ITaskController } from './dto/task-controller.dto';
 import { TaskService } from './task.service';
+import { TaskProducer } from './task.producer';
 
 const AuthGuard = JWTAuthControllerGuard();
 
 @Controller('task')
 @UseGuards(AuthGuard)
 export class TaskController {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(
+    private readonly taskService: TaskService,
+    private readonly taskProducer: TaskProducer,
+  ) {}
 
   @Post()
   @UseGuards(RoleACLGuard('manager:true', 'technician:id:body'))
@@ -61,5 +65,17 @@ export class TaskController {
     @GetRequestUser() requestUser: IUser,
   ): Promise<ITaskController.UpdateResponse> {
     return await this.taskService.updateTask(taskId, body, requestUser.role);
+  }
+
+  @Get('finish')
+  @UseGuards(RoleACLGuard('manager:true', 'technician:id:body'))
+  @SwaggerDocs({
+    response: ITaskController.FinishTaskResponse,
+    hasBearerToken: true,
+  })
+  async finishTask(
+    @Body() body: ITaskController.FinishTaskDTO,
+  ): Promise<ITaskController.FinishTaskResponse> {
+    return this.taskProducer.finishTaskMessage(body);
   }
 }
