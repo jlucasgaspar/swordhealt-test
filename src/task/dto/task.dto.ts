@@ -26,5 +26,5 @@ export class ITask {
 export class FinishTaskDTO {
   userId: number;
   taskId: number;
-  finishedAt: Date;
+  finishedAt: string;
 }

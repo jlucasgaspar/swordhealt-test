@@ -49,6 +49,11 @@ export class TaskRepository {
     return await query.whereNull('deletedAt');
   };
 
+  findById: ITaskRepository.FindById = async (id) => {
+    const result = await table().where('id', id).whereNull('deletedAt').first();
+    return result || null;
+  };
+
   softDelete: ITaskRepository.SoftDelete = async (id) => {
     const result = await table()
       .where('id', id)

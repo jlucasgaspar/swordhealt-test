@@ -43,19 +43,42 @@ export class TaskService {
   }
 
   async finishTask({ finishedAt, taskId, userId }: FinishTaskDTO) {
-    const [user, isUpdated] = await Promise.all([
+    const [user, task] = await Promise.all([
       this.userRepository.findById(userId),
-      this.taskRepository.update(taskId, { finishedAt }),
+      this.taskRepository.findById(taskId),
     ]);
 
+    let notFoundMessage = '';
+
     if (!user) {
-      const errorMessage = `Task ID ${taskId} finished: ${isUpdated}. User ID ${userId} not found.`;
-      console.error(errorMessage);
-      throw new NotFoundException(errorMessage);
+      notFoundMessage = `User ID provided not found: ${userId}`;
     }
 
-    console.log(
-      `User ${user.name} finished task ${taskId} at time ${finishedAt}`,
-    );
+    if (!task) {
+      notFoundMessage = `Task ID provided not found: ${taskId}`;
+    }
+
+    if (notFoundMessage) {
+      console.error(notFoundMessage);
+      throw new NotFoundException(notFoundMessage);
+    }
+
+    if (task.userId !== userId) {
+      const errorMessage = `userId ${userId} does not belongs to taskId ${taskId}`;
+      console.error(errorMessage);
+      throw new BadRequestException(errorMessage);
+    }
+
+    await this.taskRepository.update(taskId, {
+      finishedAt: new Date(finishedAt),
+    });
+
+    const successMessage = `User ${user.name} finished task ${taskId} at time ${finishedAt}`;
+
+    console.log(successMessage);
+
+    return {
+      message: successMessage,
+    };
   }
 }

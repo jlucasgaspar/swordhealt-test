@@ -86,3 +86,70 @@ describe('findAllWithFilter', () => {
     expect(resultWithUserIdFilter.tasks).toHaveLength(1);
   });
 });
+
+describe('finishTask', () => {
+  beforeEach(beforeEachFunction);
+
+  it('should throw if userId provided is not found', async () => {
+    const result = sut.finishTask({
+      finishedAt: new Date().toISOString(),
+      taskId: 100000,
+      userId: 100000,
+    });
+    expect(result).rejects.toThrow(NotFoundException);
+  });
+
+  it('should throw if taskId provided is not found', async () => {
+    const createdUser = await userRepositoryMock.insert({
+      email: 'email@mail.com',
+      name: 'user test',
+      password: '123456',
+      role: 'manager',
+    });
+    const result = sut.finishTask({
+      finishedAt: new Date().toISOString(),
+      taskId: 100000,
+      userId: createdUser.id,
+    });
+    expect(result).rejects.toThrow(NotFoundException);
+  });
+
+  it('should throw if userId does not belongs to taskId', async () => {
+    const createdUser = await userRepositoryMock.insert({
+      email: 'email@mail.com',
+      name: 'user test',
+      password: '123456',
+      role: 'manager',
+    });
+    const userIdWrong = createdUser.id + 199999;
+    const createdTask = await taskRepositoryMock.insert({
+      userId: userIdWrong,
+      summary: 'summary',
+    });
+    const result = sut.finishTask({
+      finishedAt: new Date().toISOString(),
+      taskId: createdTask.id,
+      userId: createdUser.id,
+    });
+    expect(result).rejects.toThrow(BadRequestException);
+  });
+
+  it('should return a success message if everything is ok', async () => {
+    const createdUser = await userRepositoryMock.insert({
+      email: 'email@mail.com',
+      name: 'user test',
+      password: '123456',
+      role: 'manager',
+    });
+    const createdTask = await taskRepositoryMock.insert({
+      userId: createdUser.id,
+      summary: 'summary',
+    });
+    const result = await sut.finishTask({
+      finishedAt: new Date().toISOString(),
+      taskId: createdTask.id,
+      userId: createdUser.id,
+    });
+    expect(result.message).toBeTruthy();
+  });
+});

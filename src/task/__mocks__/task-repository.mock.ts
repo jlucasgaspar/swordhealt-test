@@ -62,6 +62,10 @@ export class TaskRepositoryMock implements TaskRepository {
     });
   };
 
+  findById: ITaskRepository.FindById = async (id) => {
+    return this.db.find((task) => task.id === id);
+  };
+
   softDelete: ITaskRepository.SoftDelete = async (id) => {
     let isOk = false;
 

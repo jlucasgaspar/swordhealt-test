@@ -11,7 +11,7 @@ export class TaskProducer {
       value: JSON.stringify({
         userId: params.userId,
         taskId: params.taskId,
-        finishedAt: new Date(),
+        finishedAt: new Date().toISOString(),
       }),
     };
 

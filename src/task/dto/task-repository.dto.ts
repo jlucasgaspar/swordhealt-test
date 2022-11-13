@@ -8,6 +8,8 @@ export namespace ITaskRepository {
 
   export type Update = (id: number, params: Partial<ITask>) => Promise<boolean>;
 
+  export type FindById = (id: number) => Promise<ITask | null>;
+
   export type FindAll = (
     filterParams?: FindAllFilterParams,
   ) => Promise<ITask[]>;
