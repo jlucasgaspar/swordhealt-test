@@ -13,7 +13,7 @@ if (!process.env.KAFKA_URL) {
 const brokers = [process.env.KAFKA_URL];
 
 @Injectable()
-export class ConsumerService implements OnApplicationShutdown {
+export class KafkaConsumerProvider implements OnApplicationShutdown {
   private readonly kafka = new Kafka({ brokers });
   private readonly consumers: Consumer[] = [];
 

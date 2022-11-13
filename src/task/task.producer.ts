@@ -1,10 +1,10 @@
-import { ProducerService } from '@/kafka/producer.service';
+import { KafkaProducerProvider } from '@/kafka/producer.provider';
 import { Injectable } from '@nestjs/common';
 import { FinishTaskDTO } from './dto/task.dto';
 
 @Injectable()
 export class TaskProducer {
-  constructor(private readonly producerService: ProducerService) {}
+  constructor(private readonly producerProvider: KafkaProducerProvider) {}
 
   async finishTaskMessage(params: Omit<FinishTaskDTO, 'finishedAt'>) {
     const message = {
@@ -15,7 +15,7 @@ export class TaskProducer {
       }),
     };
 
-    await this.producerService.produce({
+    await this.producerProvider.produce({
       topic: 'task-finished',
       messages: [message],
     });

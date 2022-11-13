@@ -8,7 +8,7 @@ if (!process.env.KAFKA_URL) {
 const brokers = [process.env.KAFKA_URL];
 
 @Injectable()
-export class ProducerService implements OnModuleInit {
+export class KafkaProducerProvider implements OnModuleInit {
   private readonly kafka = new Kafka({ brokers });
   private readonly producer = this.kafka.producer();
 
