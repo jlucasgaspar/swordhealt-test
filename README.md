@@ -9,7 +9,7 @@
  3. Wait docker goes up completely, then run `npx knex migrate:latest`
  4. To create 1 manager and 3 technicians, run `npx knex seed:run`
  5. `npm run start:dev`
- 6. Wait the API show the log message **Nest application successfully started** and access the url `http://localhost:3000/docs` to see swagger documentation
+ 6. Wait the terminal show the log message **"Nest application successfully started"** and access the url `http://localhost:3000/docs` to see swagger documentation
 
 ## Postman docs to download
  - [Postman Environment](https://drive.google.com/file/d/1QKiPojjnnekzTNxXHI5IDSvFbtI01Juf/view?usp=share_link)
