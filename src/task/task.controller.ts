@@ -33,6 +33,7 @@ export class TaskController {
   @SwaggerDocs({
     response: ITaskController.CreateResponse,
     hasBearerToken: true,
+    tag: 'manager + technician',
   })
   async create(
     @Body() body: ITaskController.CreateDTO,
@@ -45,6 +46,7 @@ export class TaskController {
   @SwaggerDocs({
     response: ITaskController.GetAllResponse,
     hasBearerToken: true,
+    tag: 'manager + technician',
   })
   async getAll(
     @Query('userId') userId?: number,
@@ -59,6 +61,7 @@ export class TaskController {
   @SwaggerDocs({
     response: ITaskController.DeleteResponse,
     hasBearerToken: true,
+    tag: 'manager',
   })
   async delete(
     @Param('taskId') taskId: number,
@@ -71,6 +74,7 @@ export class TaskController {
   @SwaggerDocs({
     response: ITaskController.UpdateResponse,
     hasBearerToken: true,
+    tag: 'manager + technician',
   })
   async update(
     @Param('taskId') taskId: number,
@@ -80,11 +84,12 @@ export class TaskController {
     return await this.taskService.updateTask(taskId, body, requestUser.role);
   }
 
-  @Get('finish')
+  @Post('finish')
   @UseGuards(RoleACLGuard('manager:true', 'technician:id:body'))
   @SwaggerDocs({
     response: ITaskController.FinishTaskResponse,
     hasBearerToken: true,
+    tag: 'manager + technician',
   })
   async finishTask(
     @Body() body: ITaskController.FinishTaskDTO,

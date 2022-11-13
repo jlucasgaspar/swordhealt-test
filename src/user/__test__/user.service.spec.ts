@@ -116,6 +116,18 @@ describe('updateUser', () => {
     expect(result).rejects.toThrow(NotFoundException);
   });
 
+  it('should call encrypterProvider if new password is provided', async () => {
+    const createdUser = await userRepositoryMock.insert({
+      email: 'email1@mail.com',
+      password: '123456',
+      name: 'name 1',
+      role: 'manager',
+    });
+    const hashMethodSpy = jest.spyOn(encrypterProvider, 'hash');
+    await sut.updateUser(createdUser.id, { password: 'new_pass' });
+    expect(hashMethodSpy).toHaveBeenCalled();
+  });
+
   it('should update user if everything is ok', async () => {
     const createdUser = await userRepositoryMock.insert({
       email: 'email1@mail.com',

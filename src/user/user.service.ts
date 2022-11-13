@@ -58,6 +58,9 @@ export class UserService {
   }
 
   async updateUser(userId: number, params: IUserService.UpdateDTO) {
+    if (params.password) {
+      params.password = await this.encrypterProvider.hash(params.password);
+    }
     const updated = await this.userRepository.update(userId, params);
     return { updated };
   }

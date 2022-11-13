@@ -28,6 +28,7 @@ export class UserController {
   @SwaggerDocs({
     response: IUserController.GetAllResponse,
     hasBearerToken: true,
+    tag: 'manager',
   })
   async getAll(): Promise<IUserController.GetAllResponse> {
     return await this.userService.getAllUsers();
@@ -38,6 +39,7 @@ export class UserController {
   @SwaggerDocs({
     response: IUserController.CreateResponse,
     hasBearerToken: true,
+    tag: 'manager',
   })
   async createUser(
     @Body() body: IUserController.CreateDTO,
@@ -50,19 +52,21 @@ export class UserController {
   @SwaggerDocs({
     response: IUserController.UpdateResponse,
     hasBearerToken: true,
+    tag: 'manager + technician',
   })
   async updateUser(
     @Param('userId') userId: number,
     @Body() body: IUserController.UpdateDTO,
   ): Promise<IUserController.UpdateResponse> {
-    return this.userService.updateUser(Number(userId), body);
+    return this.userService.updateUser(userId, body);
   }
 
   @Delete(':userId')
-  @UseGuards(RoleACLGuard('manager:true', 'technician:id:param'))
+  @UseGuards(RoleACLGuard('manager:true', 'technician:false'))
   @SwaggerDocs({
     response: IUserController.DeleteResponse,
     hasBearerToken: true,
+    tag: 'manager',
   })
   async deleteUser(
     @Param('userId') userId: string,
@@ -71,7 +75,10 @@ export class UserController {
   }
 
   @Post('getToken')
-  @SwaggerDocs({ response: IUserController.GetTokenResponse })
+  @SwaggerDocs({
+    response: IUserController.GetTokenResponse,
+    tag: 'public',
+  })
   async getToken(
     @Body() body: IUserController.GetTokenDTO,
   ): Promise<IUserController.GetTokenResponse> {
