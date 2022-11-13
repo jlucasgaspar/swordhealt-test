@@ -119,12 +119,12 @@ describe('finishTask', () => {
   beforeEach(beforeEachFunction);
 
   it('should throw if userId provided is not found', async () => {
-    const result = sut.finishTask({
+    const result = await sut.finishTask({
       finishedAt: new Date().toISOString(),
       taskId: 100000,
       userId: 100000,
     });
-    expect(result).rejects.toThrow(NotFoundException);
+    expect(result.isOk).toBeFalsy();
   });
 
   it('should throw if taskId provided is not found', async () => {
@@ -134,12 +134,12 @@ describe('finishTask', () => {
       password: '123456',
       role: 'manager',
     });
-    const result = sut.finishTask({
+    const result = await sut.finishTask({
       finishedAt: new Date().toISOString(),
       taskId: 100000,
       userId: createdUser.id,
     });
-    expect(result).rejects.toThrow(NotFoundException);
+    expect(result.isOk).toBeFalsy();
   });
 
   it('should throw if userId does not belongs to taskId', async () => {
@@ -154,12 +154,12 @@ describe('finishTask', () => {
       userId: userIdWrong,
       summary: 'summary',
     });
-    const result = sut.finishTask({
+    const result = await sut.finishTask({
       finishedAt: new Date().toISOString(),
       taskId: createdTask.id,
       userId: createdUser.id,
     });
-    expect(result).rejects.toThrow(BadRequestException);
+    expect(result.isOk).toBeFalsy();
   });
 
   it('should return a success message if everything is ok', async () => {
@@ -178,6 +178,6 @@ describe('finishTask', () => {
       taskId: createdTask.id,
       userId: createdUser.id,
     });
-    expect(result.message).toBeTruthy();
+    expect(result.isOk).toBeTruthy();
   });
 });

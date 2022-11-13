@@ -20,6 +20,6 @@ export class TaskProducer {
       messages: [message],
     });
 
-    return { finished: true };
+    return { sentToQueue: true };
   }
 }

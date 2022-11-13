@@ -73,7 +73,7 @@ class IFinishTaskDTO {
 }
 class IFinishTaskResponse {
   @ApiProperty({ type: Boolean })
-  finished: boolean;
+  sentToQueue: boolean;
 }
 
 export namespace ITaskController {

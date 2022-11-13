@@ -69,33 +69,36 @@ export class TaskService {
     let notFoundMessage = '';
 
     if (!user) {
-      notFoundMessage = `User ID provided not found: ${userId}`;
+      notFoundMessage = `Data provided not found: userId ${userId}`;
     }
 
     if (!task) {
-      notFoundMessage = `Task ID provided not found: ${taskId}`;
+      notFoundMessage = `Data provided not found: taskId ${taskId}`;
     }
 
     if (notFoundMessage) {
-      console.error(notFoundMessage);
-      throw new NotFoundException(notFoundMessage);
+      console.log('\x1b[31m', notFoundMessage);
+      return {
+        isOk: false,
+        message: notFoundMessage,
+      };
     }
 
     if (task.userId !== userId) {
       const errorMessage = `userId ${userId} does not belongs to taskId ${taskId}`;
-      console.error(errorMessage);
-      throw new BadRequestException(errorMessage);
+      console.error('\x1b[31m', errorMessage);
+      return {
+        isOk: false,
+        message: errorMessage,
+      };
     }
-
-    await this.taskRepository.update(taskId, {
-      finishedAt: new Date(finishedAt),
-    });
 
     const successMessage = `User ${user.name} finished task ${taskId} at time ${finishedAt}`;
 
-    console.log(successMessage);
+    console.log('\x1b[32m', successMessage);
 
     return {
+      isOk: true,
       message: successMessage,
     };
   }
