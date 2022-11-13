@@ -42,6 +42,11 @@ export class TaskService {
     return { tasks };
   }
 
+  async softDeleteTask(taskId: number) {
+    const deleted = await this.taskRepository.softDelete(taskId);
+    return { deleted };
+  }
+
   async finishTask({ finishedAt, taskId, userId }: FinishTaskDTO) {
     const [user, task] = await Promise.all([
       this.userRepository.findById(userId),

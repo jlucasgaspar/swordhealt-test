@@ -49,6 +49,16 @@ class IUpdateResponse {
 }
 
 /*
+ * DELETE /task/:taskId
+ */
+@JoiSchemaOptions({ allowUnknown: false, abortEarly: false })
+class IDeleteDTO {}
+class IDeleteResponse {
+  @ApiProperty({ type: Boolean })
+  deleted: boolean;
+}
+
+/*
  * POST /task/finish
  */
 @JoiSchemaOptions({ allowUnknown: false, abortEarly: false })
@@ -75,6 +85,9 @@ export namespace ITaskController {
 
   export class UpdateDTO extends IUpdateDTO {}
   export class UpdateResponse extends IUpdateResponse {}
+
+  export class DeleteDTO extends IDeleteDTO {}
+  export class DeleteResponse extends IDeleteResponse {}
 
   export class FinishTaskDTO extends IFinishTaskDTO {}
   export class FinishTaskResponse extends IFinishTaskResponse {}

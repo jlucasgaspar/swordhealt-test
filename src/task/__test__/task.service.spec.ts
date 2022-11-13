@@ -87,6 +87,19 @@ describe('findAllWithFilter', () => {
   });
 });
 
+describe('softDeleteTask', () => {
+  beforeEach(beforeEachFunction);
+
+  it('should return a boolean if everything is ok', async () => {
+    const createdTask = await taskRepositoryMock.insert({
+      summary: 'summary',
+      userId: 1,
+    });
+    const result = await sut.softDeleteTask(createdTask.id);
+    expect(result.deleted).toBeTruthy();
+  });
+});
+
 describe('finishTask', () => {
   beforeEach(beforeEachFunction);
 

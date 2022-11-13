@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -14,8 +15,8 @@ import { SwaggerDocs } from '@/shared/decorators/swagger.decorator';
 import { RoleACLGuard } from '@/shared/guards/role-acl.guard';
 import { IUser } from '@/user/dto/user.dto';
 import { ITaskController } from './dto/task-controller.dto';
-import { TaskService } from './task.service';
 import { TaskProducer } from './task.producer';
+import { TaskService } from './task.service';
 
 const AuthGuard = JWTAuthControllerGuard();
 
@@ -51,6 +52,18 @@ export class TaskController {
     return await this.taskService.findAllWithFilter({
       ...(userId && { userId }),
     });
+  }
+
+  @Delete(':taskId')
+  @UseGuards(RoleACLGuard('manager:true', 'technician:false'))
+  @SwaggerDocs({
+    response: ITaskController.DeleteResponse,
+    hasBearerToken: true,
+  })
+  async delete(
+    @Param('taskId') taskId: number,
+  ): Promise<ITaskController.DeleteResponse> {
+    return await this.taskService.softDeleteTask(taskId);
   }
 
   @Put(':taskId')

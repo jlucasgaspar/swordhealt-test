@@ -5,4 +5,5 @@ export namespace ITaskService {
   export type GetAllDTO = Partial<Pick<ITask, 'userId'>>;
   export type CreateDTO = ITaskController.CreateDTO;
   export type UpdateDTO = ITaskController.UpdateDTO;
+  export type DeleteDTO = ITaskController.DeleteDTO;
 }
