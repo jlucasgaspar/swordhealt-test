@@ -29,10 +29,23 @@ export class TaskService {
     taskId: number,
     params: ITaskService.UpdateDTO,
     requestUserRole: IUserRole,
+    requestUserId: number,
   ) {
     if (params.userId && requestUserRole === 'technician') {
       throw new BadRequestException('Only manager can change userId of a task');
     }
+
+    const task = await this.taskRepository.findById(taskId);
+    if (!task) {
+      throw new NotFoundException('task not found');
+    }
+
+    if (task.userId !== requestUserId && requestUserRole === 'technician') {
+      throw new BadRequestException(
+        'you can not change others technicians task',
+      );
+    }
+
     const updated = await this.taskRepository.update(taskId, params);
     return { updated };
   }

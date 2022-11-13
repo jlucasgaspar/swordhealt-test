@@ -25,6 +25,7 @@ type TechnicianAccess =
 export function RoleACLGuard(
   managerAccess: ManagerAccess,
   technicianAccess: TechnicianAccess,
+  continueIfNotFoundUserId = false,
 ) {
   @Injectable()
   class RoleGuardClass implements CanActivate {
@@ -54,7 +55,11 @@ export function RoleACLGuard(
       }
 
       if (technicianAccess.includes('technician:id:')) {
-        return this.validateTechnician(request, technicianAccess);
+        return this.validateTechnician(
+          request,
+          technicianAccess,
+          continueIfNotFoundUserId,
+        );
       }
 
       throw new NotImplementedException('something went wrong in roles ACL');
@@ -63,6 +68,7 @@ export function RoleACLGuard(
     validateTechnician(
       request: HttpRequest,
       technicianAccess: TechnicianAccess,
+      continueIfNotFoundUserId = false,
     ) {
       let userId: number;
 
@@ -78,14 +84,18 @@ export function RoleACLGuard(
         userId = Number(request.query.userId);
       }
 
+      if (userId && request?.user?.id !== userId) {
+        throw new ForbiddenException('different technician data not allowed');
+      }
+
+      if (continueIfNotFoundUserId) {
+        return true;
+      }
+
       if (!userId) {
         throw new UnprocessableEntityException(
           'userId not found neither in body, param or query',
         );
-      }
-
-      if (request?.user?.id !== userId) {
-        throw new ForbiddenException('different technician data not allowed');
       }
 
       return true;

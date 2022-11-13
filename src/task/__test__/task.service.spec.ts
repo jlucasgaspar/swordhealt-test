@@ -41,13 +41,27 @@ describe('updateTask', () => {
 
   it('should throw if userId is provided but requestUser is not a manager', async () => {
     const taskDto = { userId: 2 };
-    const result = sut.updateTask(1, taskDto, 'technician');
+    const result = sut.updateTask(1, taskDto, 'technician', 1);
     expect(result).rejects.toThrow(BadRequestException);
   });
 
   it('should throw if userId is provided but this userId does not exists', async () => {
-    const result = sut.updateTask(1, { userId: 99999 }, 'manager');
+    const result = sut.updateTask(1, { userId: 99999 }, 'manager', 1);
     expect(result).rejects.toThrow(NotFoundException);
+  });
+
+  it('should throw if requestUserId is not the same from userId in task, and this requestUser role is a technician', async () => {
+    const createdTask = await taskRepositoryMock.insert({
+      userId: 1,
+      summary: 'summary',
+    });
+    const result = sut.updateTask(
+      createdTask.id,
+      { summary: 'new summary' },
+      'technician',
+      2000,
+    );
+    expect(result).rejects.toThrow(BadRequestException);
   });
 
   it('should return a task if everything is ok', async () => {
@@ -63,6 +77,7 @@ describe('updateTask', () => {
       createdTask.task.id,
       { summary: 'new summary' },
       'manager',
+      1,
     );
     expect(result.updated).toBeTruthy();
   });

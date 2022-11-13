@@ -93,6 +93,15 @@ class IGetTokenResponse {
   token: string;
 }
 
+/*
+ * GET /user/me
+ */
+class IGetMeDTO {}
+class IGetMeResponse {
+  @ApiProperty({ type: IUser })
+  user: IUser;
+}
+
 export namespace IUserController {
   export class GetAllDTO extends IGetAllDTO {}
   export class GetAllResponse extends IGetAllResponse {}
@@ -108,4 +117,7 @@ export namespace IUserController {
 
   export class GetTokenDTO extends IGetTokenDTO {}
   export class GetTokenResponse extends IGetTokenResponse {}
+
+  export class GetMeDTO extends IGetMeDTO {}
+  export class GetMeResponse extends IGetMeResponse {}
 }

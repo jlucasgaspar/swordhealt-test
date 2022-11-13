@@ -70,7 +70,7 @@ export class TaskController {
   }
 
   @Put(':taskId')
-  @UseGuards(RoleACLGuard('manager:true', 'technician:id:param'))
+  @UseGuards(RoleACLGuard('manager:true', 'technician:id:param', true))
   @SwaggerDocs({
     response: ITaskController.UpdateResponse,
     hasBearerToken: true,
@@ -81,7 +81,12 @@ export class TaskController {
     @Body() body: ITaskController.UpdateDTO,
     @GetRequestUser() requestUser: IUser,
   ): Promise<ITaskController.UpdateResponse> {
-    return await this.taskService.updateTask(taskId, body, requestUser.role);
+    return await this.taskService.updateTask(
+      taskId,
+      body,
+      requestUser.role,
+      requestUser.id,
+    );
   }
 
   @Post('finish')

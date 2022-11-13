@@ -9,10 +9,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JWTAuthControllerGuard } from '@/shared/guards/jwt-auth-controller.guard';
-import { SwaggerDocs } from '@/shared/decorators/swagger.decorator';
+import { GetRequestUser } from '@/shared/decorators/get-request-user.decorator';
 import { RoleACLGuard } from '@/shared/guards/role-acl.guard';
+import { SwaggerDocs } from '@/shared/decorators/swagger.decorator';
 import { IUserController } from './dto/user-controller.dto';
 import { UserService } from './user.service';
+import { IUser } from './dto/user.dto';
 
 const AuthGuard = JWTAuthControllerGuard({
   publicRoutes: ['getToken'],
@@ -83,5 +85,15 @@ export class UserController {
     @Body() body: IUserController.GetTokenDTO,
   ): Promise<IUserController.GetTokenResponse> {
     return this.userService.getToken(body);
+  }
+
+  @Get('me')
+  @SwaggerDocs({
+    response: IUserController.GetMeResponse,
+    hasBearerToken: true,
+    tag: 'manager + technician',
+  })
+  async getMe(@GetRequestUser() user: IUser) {
+    return { user };
   }
 }
