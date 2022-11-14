@@ -78,19 +78,13 @@ export class TaskService {
 
     if (notFoundMessage) {
       console.log('\x1b[31m', notFoundMessage);
-      return {
-        isOk: false,
-        message: notFoundMessage,
-      };
+      throw new NotFoundException(notFoundMessage);
     }
 
     if (task.userId !== userId) {
       const errorMessage = `userId ${userId} does not belongs to taskId ${taskId}`;
-      console.error('\x1b[31m', errorMessage);
-      return {
-        isOk: false,
-        message: errorMessage,
-      };
+      console.log('\x1b[31m', errorMessage);
+      throw new BadRequestException(errorMessage);
     }
 
     const successMessage = `User ${user.name} finished task ${taskId} at time ${finishedAt}`;
@@ -98,7 +92,6 @@ export class TaskService {
     console.log('\x1b[32m', successMessage);
 
     return {
-      isOk: true,
       message: successMessage,
     };
   }

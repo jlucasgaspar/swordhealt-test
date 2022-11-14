@@ -1,4 +1,6 @@
+import * as retry from 'async-retry';
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { databaseHelper } from '@/shared/helpers/database.helper';
 import { KafkaConsumerProvider } from '@/kafka/consumer.provider';
 import { FinishTaskDTO } from './dto/task.dto';
 import { TaskService } from './task.service';
@@ -19,7 +21,21 @@ export class TaskConsumer implements OnModuleInit {
           message.value.toString(),
         );
 
-        await this.taskService.finishTask(parsedMessage);
+        try {
+          const finishTaskFunction = async () => {
+            await this.taskService.finishTask(parsedMessage);
+          };
+
+          const retryOptions: retry.Options = { retries: 3 };
+
+          await retry(finishTaskFunction, retryOptions);
+        } catch (error) {
+          await databaseHelper.getTable('dead_letter_queue').insert({
+            kafka_message: message.value.toString(),
+            error_message: JSON.stringify(error),
+          });
+          console.log('\x1b[31m', 'Message dead, sent to DB dead_letter_queue');
+        }
       },
     });
   }

@@ -19,7 +19,7 @@ export class KafkaConsumerProvider implements OnApplicationShutdown {
 
   async consume(topic: ConsumerSubscribeTopic, config: ConsumerRunConfig) {
     const consumer = this.kafka.consumer({
-      groupId: 'nestjs-kafka',
+      groupId: 'swordhealth-test-kafka',
     });
     await consumer.connect();
     await consumer.subscribe(topic);
